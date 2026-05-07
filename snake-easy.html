@@ -17,10 +17,10 @@
         }
         .game-wrapper { text-align: center; }
         h1 {
-            color: #76ff03;
+            color: #ffab40;
             font-size: 28px;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px #76ff03, 0 0 20px #76ff03;
+            text-shadow: 0 0 10px #ffab40, 0 0 20px #ffab40;
             letter-spacing: 4px;
         }
         #info {
@@ -30,16 +30,16 @@
             text-shadow: 0 0 6px #00e5ff;
         }
         canvas {
-            border: 2px solid #76ff03;
-            box-shadow: 0 0 15px #76ff03, inset 0 0 15px rgba(118, 255, 3, 0.1);
+            border: 2px solid #ffab40;
+            box-shadow: 0 0 15px #ffab40, inset 0 0 15px rgba(255, 171, 64, 0.1);
             display: block;
             margin: 0 auto;
         }
         #score {
-            color: #76ff03;
+            color: #ffab40;
             font-size: 18px;
             margin-top: 12px;
-            text-shadow: 0 0 8px #76ff03;
+            text-shadow: 0 0 8px #ffab40;
         }
         #msg {
             color: #ff9100;
@@ -104,7 +104,7 @@
             ctx.fillStyle = "#0a0a0f";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.strokeStyle = "rgba(118, 255, 3, 0.1)";
+            ctx.strokeStyle = "rgba(255, 171, 64, 0.1)";
             ctx.lineWidth = 1;
             for (let x = 0; x <= canvas.width; x += GRID) {
                 ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -128,9 +128,9 @@
                 const s = snake[i];
                 const bright = 1 - i / snake.length * 0.5;
                 ctx.save();
-                ctx.shadowColor = "#76ff03";
+                ctx.shadowColor = "#ffab40";
                 ctx.shadowBlur = i === 0 ? 15 : 8;
-                ctx.fillStyle = i === 0 ? "#76ff03" : `rgba(118, 255, 3, ${bright})`;
+                ctx.fillStyle = i === 0 ? "#ffab40" : `rgba(255, 171, 64, ${bright})`;
                 ctx.fillRect(s.x * GRID + 1, s.y * GRID + 1, GRID - 2, GRID - 2);
                 ctx.restore();
             }
