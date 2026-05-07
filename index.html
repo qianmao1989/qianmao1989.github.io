@@ -72,14 +72,62 @@
         </div>
 
         <div class="draft">
-            <h2>使用方法</h2>
+            <h2>Python 常用代码片段</h2>
             <div class="date">2026-05-08</div>
-            <p>直接编辑 <code>index.html</code> 文件，复制一个 <code>div.draft</code> 块，改成你的内容就行。</p>
-            <pre>&lt;div class="draft"&gt;
-  &lt;h2&gt;标题&lt;/h2&gt;
-  &lt;div class="date"&gt;日期&lt;/div&gt;
-  &lt;p&gt;内容...&lt;/p&gt;
-&lt;/div&gt;</pre>
+            <p>读写文件：</p>
+            <pre># 读文件
+with open("data.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+# 写文件
+with open("output.txt", "w", encoding="utf-8") as f:
+    f.write("Hello")</pre>
+            <p>列表推导式：</p>
+            <pre># 过滤偶数
+nums = [1, 2, 3, 4, 5]
+evens = [x for x in nums if x % 2 == 0]</pre>
+            <p>JSON 操作：</p>
+            <pre>import json
+
+# 读取 JSON
+with open("data.json", "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+# 写入 JSON
+with open("output.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)</pre>
+        </div>
+
+        <div class="draft">
+            <h2>Git 常用命令</h2>
+            <div class="date">2026-05-08</div>
+            <pre># 提交代码
+git add .
+git commit -m "说明"
+git push
+
+# 拉取最新代码
+git pull
+
+# 查看状态
+git status
+
+# 查看历史
+git log --oneline</pre>
+        </div>
+
+        <div class="draft">
+            <h2>常用工具网站</h2>
+            <div class="date">2026-05-08</div>
+            <p><strong>开发工具：</strong></p>
+            <p>• <a href="https://www.runoob.com/">菜鸟教程</a> — 各语言入门参考</p>
+            <p>• <a href="https://regex101.com/">regex101</a> — 正则表达式测试</p>
+            <p>• <a href="https://www.json.cn/">JSON.cn</a> — JSON 格式化/校验</p>
+            <p>• <a href="https://tool.lu/">tool.lu</a> — 在线工具合集</p>
+            <p><strong>学习资源：</strong></p>
+            <p>• <a href="https://github.com/">GitHub</a> — 代码托管</p>
+            <p>• <a href="https://stackoverflow.com/">Stack Overflow</a> — 技术问答</p>
+            <p>• <a href="https://chat.openai.com/">ChatGPT</a> — AI 助手</p>
         </div>
 
         <footer>
