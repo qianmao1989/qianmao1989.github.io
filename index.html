@@ -29,6 +29,48 @@
             margin-bottom: 16px;
             border-radius: 0 4px 4px 0;
         }
+        .game-cards {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .game-card {
+            flex: 1;
+            text-align: center;
+            padding: 20px 16px;
+            border-radius: 8px;
+            background: #1a1a2e;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .game-card.strict {
+            border: 2px solid #e040fb;
+            animation: neon-purple 2s ease-in-out infinite alternate;
+        }
+        .game-card.easy {
+            border: 2px solid #ffab40;
+            animation: neon-orange 2s ease-in-out infinite alternate;
+        }
+        .game-card h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+        .game-card p {
+            font-size: 12px;
+            color: #999;
+            margin: 0;
+        }
+        .game-card.strict h3 { color: #e040fb; }
+        .game-card.easy h3 { color: #ffab40; }
+        @keyframes neon-purple {
+            0% { box-shadow: 0 0 5px #e040fb, 0 0 10px #e040fb, inset 0 0 5px rgba(224, 64, 251, 0.2); }
+            100% { box-shadow: 0 0 15px #e040fb, 0 0 30px #e040fb, 0 0 45px #e040fb, inset 0 0 15px rgba(224, 64, 251, 0.3); }
+        }
+        @keyframes neon-orange {
+            0% { box-shadow: 0 0 5px #ffab40, 0 0 10px #ffab40, inset 0 0 5px rgba(255, 171, 64, 0.2); }
+            100% { box-shadow: 0 0 15px #ffab40, 0 0 30px #ffab40, 0 0 45px #ffab40, inset 0 0 15px rgba(255, 171, 64, 0.3); }
+        }
         .draft h2 { font-size: 18px; margin-bottom: 8px; }
         .draft .date { font-size: 12px; color: #999; }
         .draft p { margin-top: 8px; font-size: 15px; }
@@ -69,10 +111,16 @@
             <div class="date">2026-05-08</div>
             <p>这是我的线上草稿箱，用来记录各种零碎想法、代码片段、学习笔记。</p>
             <p>想写什么就写什么，没人在意。</p>
-            <p style="margin-top: 12px;">
-                <a href="snake.html" style="color: #e040fb;">→ 严格版</a> ·
-                <a href="snake-easy.html" style="color: #76ff03;">→ 人菜瘾大版</a>
-            </p>
+            <div class="game-cards">
+                <a href="snake.html" class="game-card strict">
+                    <h3>严格版</h3>
+                    <p>碰墙碰自己都死</p>
+                </a>
+                <a href="snake-easy.html" class="game-card easy">
+                    <h3>人菜瘾大版</h3>
+                    <p>怎么撞都不会死</p>
+                </a>
+            </div>
         </div>
 
         <div class="draft">
