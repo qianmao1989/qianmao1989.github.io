@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Agent 的 12 个底层原理</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, "Microsoft YaHei", sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.8;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+            border-bottom: 2px solid #333;
+            margin-bottom: 30px;
+        }
+        header h1 { font-size: 26px; }
+        header p { color: #666; margin-top: 8px; font-size: 14px; }
+        .back-link { display: inline-block; margin-top: 12px; color: #333; font-size: 13px; text-decoration: none; border-bottom: 1px dashed #333; }
+        .principle {
+            background: #fff;
+            border-left: 4px solid #333;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .principle:hover { border-left-color: #e040fb; }
+        .principle h2 { font-size: 18px; margin-bottom: 8px; }
+        .principle .num {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            line-height: 28px;
+            border-radius: 50%;
+            font-size: 13px;
+            margin-right: 10px;
+        }
+        .principle p { font-size: 15px; margin-top: 6px; }
+        .principle .tag {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+        .summary {
+            background: #1a1a2e;
+            color: #f8f8f2;
+            padding: 20px 24px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .summary h2 { color: #e040fb; font-size: 18px; margin-bottom: 12px; }
+        .summary p { font-size: 14px; color: #ccc; }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #999;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>LLM Agent 的 12 个底层原理</h1>
+            <p>从消息结构到多智能体协作，一张图看懂 AI 是怎么工作的</p>
+            <a href="index.html" class="back-link">← 返回草稿箱</a>
+        </header>
+
+        <div class="summary">
+            <h2>🔥 一句话总结</h2>
+            <p>大模型不是魔法，是一套层层堆叠的技术栈。这 12 个原理构成了现代 LLM Agent 的完整骨架，缺一不可。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">1</span>Messages — 一切都是消息</h2>
+            <span class="tag">基础</span><span class="tag">通信协议</span>
+            <p>AI 和你的每一次对话，底层都是 <strong>messages</strong> 数组。每条消息包含两个字段：<code>role</code>（system / user / assistant / tool）和 <code>content</code>。这是 LLM 的通用协议，理解了这个就理解了 AI 的"语言"。</p>
+            <p>📌 <strong>实务</strong>：system 放规则，user 放问题，assistant 放回答，tool 放外部调用的结果。OpenAI 定义的这个标准，现在几乎所有大模型都在用。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">2</span>上下文窗口 — AI 的记忆容量</h2>
+            <span class="tag">限制</span><span class="tag">成本</span>
+            <p>LLM 能"看到"的历史是有限的，这个上限就是<strong>上下文窗口</strong>（如 128K tokens）。超出窗口的内容会被截断，就像人只能记住最近几天的对话。</p>
+            <p>📌 <strong>实务</strong>：窗口越长越贵。用好 prompt cache 可以大幅省钱——把稳定内容（system prompt）放前面，变动内容放后面，命中缓存的部分不收费。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">3</span>System Prompt — AI 的"宪法"</h2>
+            <span class="tag">核心</span><span class="tag">约束</span>
+            <p>System prompt 是 messages 中 <code>role: system</code> 的那一条，定义 AI 的<strong>身份、边界、行为规则</strong>。它是对话中最底层的规则，优先级最高。</p>
+            <p>📌 <strong>实务</strong>：写好 system prompt 比调参数更重要。好的 system prompt = 你是谁 + 你能做什么 + 你不能做什么 + 怎么说话。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">4</span>思维链 — 拆开想，才能想清楚</h2>
+            <span class="tag">推理</span><span class="tag">能力</span>
+            <p><strong>Chain of Thought (CoT)</strong>：让模型在输出答案之前，先"自言自语"地推演一遍。把复杂问题拆成小步骤，每步验证，最后汇总。</p>
+            <p>📌 <strong>实务</strong>：复杂计算、多条件任务、逻辑推理，让 AI 先列步骤再回答。DeepSeek-R1、OpenAI o1 等推理模型的内核就是思维链。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">5</span>Few-Shot — 给例子，比说要求更管用</h2>
+            <span class="tag">提示工程</span><span class="tag">样本</span>
+            <p>在 prompt 里放几个<strong>输入→输出的例子</strong>，模型就能模仿着做。比用自然语言描述"你要这样这样"更有效。</p>
+            <p>📌 <strong>实务</strong>：格式要求、分类任务、特定风格输出，给 2-3 个例子往往比写 500 字说明更精准。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">6</span>预填充 — 给 AI 起个头</h2>
+            <span class="tag">技巧</span><span class="tag">控制</span>
+            <p>在 assistant 回复还没开始之前，先给它写一个开头（如 <code>{"role": "assistant", "content": "好的，我来分析"}</code>），强迫它<strong>按你设定的方向走</strong>。</p>
+            <p>📌 <strong>实务</strong>：防拒绝、锁定格式、跳过废话。比如预填 <code>```json {</code> 就能让模型直接输出 JSON 而不闲聊。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">7</span>停止序列 — 刹车机制</h2>
+            <span class="tag">控制</span><span class="tag">安全</span>
+            <p>设定一个关键词（如 <code>&lt;/output&gt;</code> 或 <code>STOP</code>），模型碰到这个词就<strong>立即停止生成</strong>。防止跑偏、防止输出多余内容。</p>
+            <p>📌 <strong>实务</strong>：在 Tool Use 中尤为重要——模型输出工具调用后立刻刹车，等外部结果回来再继续。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">8</span>Tool Use — AI 的"手"</h2>
+            <span class="tag">核心能力</span><span class="tag">行动</span>
+            <p><strong>Function Calling</strong>：模型不只是说话，还能<strong>调用外部工具</strong>——查数据库、发邮件、执行命令、读写文件。</p>
+            <p>📌 <strong>实务</strong>：Tool Use 让 AI 从"嘴炮"变成"能做事的 Agent"。关键是定义好工具的描述和参数 schema，模型才知道什么时候用什么工具。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">9</span>RAG — 外挂知识库</h2>
+            <span class="tag">检索</span><span class="tag">知识</span>
+            <p><strong>Retrieval-Augmented Generation</strong>：模型的知识截止于训练日期，要访问最新或私有知识，先<strong>检索→再回答</strong>。把相关文档塞进上下文窗口，模型就有据可查。</p>
+            <p>📌 <strong>实务</strong>：RAG = 向量搜索 + 上下文注入。先搜到相关片段，再拼进 prompt，模型就能引用最新信息回答。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">10</span>ReAct — 思考+行动循环</h2>
+            <span class="tag">框架</span><span class="tag">决策</span>
+            <p><strong>Reasoning + Acting</strong> 的缩写。AI 不是一次性回答，而是循环：<strong>思考→行动→观察结果→再思考→再行动</strong>，直到完成任务。</p>
+            <p>📌 <strong>实务</strong>：这才是真正的 Agent 行为。Agent 不是"一句话回答"，而是"多轮调用工具、不断修正"。每次 Tool Use 都是一次 ReAct 循环。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">11</span>幻觉 — AI 最头疼的问题</h2>
+            <span class="tag">问题</span><span class="tag">对抗</span>
+            <p>模型会<strong>自信地编造不存在的事实</strong>，这就是幻觉。因为 LLM 本质是"下一个词预测器"，不是"事实验证器"。</p>
+            <p>📌 <strong>实务</strong>：对抗幻觉三件套 — ①能查的不猜 ②能跑的不想 ③能验证的不信任自己。数字用脚本跑，文件用工具读，引用先搜索确认。</p>
+        </div>
+
+        <div class="principle">
+            <h2><span class="num">12</span>Multi-Agent — 团队协作</h2>
+            <span class="tag">架构</span><span class="tag">协作</span>
+            <p>一个 Agent 不够，多个 Agent 分工协作。每个 Agent 有自己的 system prompt、工具、职责范围，互相配合完成复杂任务。</p>
+            <p>📌 <strong>实务</strong>：比如一个 Agent 管表格、一个 Agent 识图、一个 Agent 写代码、一个 Agent 管对外通信。各司其职，通过共享记忆或消息传递协调。</p>
+        </div>
+
+        <div class="summary" style="margin-top: 10px;">
+            <h2>🧩 它们之间的关系</h2>
+            <p>Messages (1) 是通信协议 → System Prompt (3) 定义边界 → 上下文窗口 (2) 限制容量</p>
+            <p>思维链 (4) + Few-Shot (5) + 预填充 (6) + 停止序列 (7) 是提示工程四件套</p>
+            <p>Tool Use (8) + RAG (9) 给 AI 装上手脚和外脑</p>
+            <p>ReAct (10) 让手脚协调运转 → 对抗幻觉 (11) 保证不出错</p>
+            <p>Multi-Agent (12) 是最终形态：多个这样的智能体组成团队</p>
+            <br>
+            <p style="color: #e040fb;"><strong>从一条消息到一支 AI 军团，这就是现代 LLM Agent 的完整地基。</strong></p>
+        </div>
+
+        <footer>
+            <p>qianmao1989.github.io &middot; 乾茂和小助理 &middot; 2026-05-20</p>
+        </footer>
+    </div>
+</body>
+</html>
