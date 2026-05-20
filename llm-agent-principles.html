@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LLM Agent 的 22 个完整原理</title>
+    <title>LLM Agent 完全技术手册 — 22原理+14幻觉套件</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -93,8 +93,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>LLM Agent 的 22 个完整原理</h1>
-            <p>从分词到多智能体，一篇文章覆盖 LLM Agent 的全部技术栈</p>
+            <h1>LLM Agent 完全技术手册</h1>
+            <p>22 个核心原理 + 14 件幻觉对抗套件，覆盖从分词到多智能体的全部技术栈</p>
             <a href="index.html" class="back-link">← 返回草稿箱</a>
         </header>
 
@@ -214,11 +214,28 @@
             <p>📌 <strong>实务</strong>：这才是真正的 Agent。每次 Tool Use 就是一次 ReAct 循环。Agent 不是"一句话回答"，而是"多轮调用工具不断修正"。</p>
         </div>
 
-        <div class="principle">
-            <h2><span class="num">15</span>幻觉 — AI 最头疼的问题</h2>
-            <span class="tag">问题</span><span class="tag">对抗</span>
+        <div class="principle extra">
+            <h2><span class="num">15</span>幻觉 — AI 最头疼的问题 + 14 件对抗套件</h2>
+            <span class="tag">问题</span><span class="tag">对抗</span><span class="tag">军械库</span>
             <p>模型会<strong>自信地编造不存在的事实</strong>。因为 LLM 是"下一个词预测器"，不是"事实验证器"。</p>
-            <p>📌 <strong>实务</strong>：对抗三件套——能查的不猜、能跑的不想、能验证的不信任自己。数字用脚本跑，文件用工具读，引用先搜索确认。</p>
+            <p style="margin-top: 12px;"><strong>🛡️ 事前预防（4件）</strong></p>
+            <p>① <strong>降低温度</strong> → Temperature 0-0.3，减少随机性，降低瞎编概率</p>
+            <p>② <strong>限定范围</strong> → System prompt 写死"不知道就说不确定，不要编造"</p>
+            <p>③ <strong>结构化输出</strong> → 预填充强制 JSON/表格，少自由发挥就少幻觉</p>
+            <p>④ <strong>Few-Shot 校准</strong> → 给正确示例当模板，模型知道自己该怎么答</p>
+            <p style="margin-top: 12px;"><strong>🔍 事中验证（5件）</strong></p>
+            <p>⑤ <strong>能查不猜</strong> → RAG 检索 + 联网搜索，让外部数据当依据</p>
+            <p>⑥ <strong>能跑不想</strong> → 数字 Python 算，文件工具读，不靠模型自己回忆</p>
+            <p>⑦ <strong>交叉验证</strong> → 同一问题两个模型/两次查询对比，结果不一致就标记</p>
+            <p>⑧ <strong>思维链拆解</strong> → 复杂问题拆成立步骤，每步单独验证后再汇总</p>
+            <p>⑨ <strong>引用溯源</strong> → 要求 AI 标注信息来源，没出处的声明就是可疑的</p>
+            <p style="margin-top: 12px;"><strong>🛑 事后拦截（5件）</strong></p>
+            <p>⑩ <strong>回读校验</strong> → 写完 Excel 读回来确认，不信任第一次输出</p>
+            <p>⑪ <strong>停止序列 + Guardrails</strong> → 实时过滤疑似幻觉，检测到就截断</p>
+            <p>⑫ <strong>人工审核</strong> → 关键数据（金额、日期、账号）人肉过一眼</p>
+            <p>⑬ <strong>多 Agent 对账</strong> → 一个 Agent 输出，另一个 Agent 审计复核</p>
+            <p>⑭ <strong>ReAct 循环兜底</strong> → 查→验证→发现不对→再查，直到确认才输出</p>
+            <p style="margin-top: 12px; color: #ffab40;">📌 <strong>军规</strong>：不信任 AI 的默认输出，把自己当成不可信的证人，交叉验证了才能当证据。</p>
         </div>
 
         <div class="principle">
@@ -296,7 +313,7 @@
                 <tr><td>⑥ 部署安全层</td><td>模型优化 (20) + Prompt Injection 防御 (21) + 评估监控 (22)</td></tr>
             </table>
             <br>
-            <p style="color: #ffab40;"><strong>从一段文本到一支 AI 军团，22 个原理，六层架构，这就是现代 LLM Agent 的完整技术栈。</strong></p>
+            <p style="color: #ffab40;"><strong>22 个核心原理 + 14 件幻觉对抗套件 + 六层架构，这就是现代 LLM Agent 的完整技术手册。</strong></p>
             <p style="font-size: 12px; color: #888; margin-top: 8px;">前 12 条参考抖音 AI 课程框架，实战案例和扩展 10 条为整理原创</p>
         </div>
 
