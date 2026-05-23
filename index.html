@@ -7,189 +7,303 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, "Microsoft YaHei", sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
+            font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            line-height: 1.7;
+            min-height: 100vh;
         }
-        .container { max-width: 800px; margin: 0 auto; }
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+            position: relative;
+            z-index: 1;
+        }
         header {
             text-align: center;
-            padding: 40px 0 20px;
-            border-bottom: 2px solid #333;
-            margin-bottom: 30px;
+            padding: 48px 0 40px;
         }
-        header h1 { font-size: 28px; }
-        header p { color: #666; margin-top: 8px; font-size: 14px; }
-        .draft {
-            background: #fff;
-            border-left: 4px solid #333;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            border-radius: 0 4px 4px 0;
-        }
-        .game-cards {
+        .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
             display: flex;
-            gap: 16px;
-            margin-top: 16px;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(108, 92, 231, .3);
         }
-        .game-card {
-            flex: 1;
-            text-align: center;
-            padding: 20px 16px;
-            border-radius: 8px;
-            background: #1a1a2e;
-            text-decoration: none;
+        header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+        header p {
+            color: #888;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #6c5ce7;
+            margin: 40px 0 20px;
+            padding-left: 4px;
+        }
+        .card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all .25s ease;
             position: relative;
             overflow: hidden;
         }
-        .game-card.strict {
-            border: 2px solid #e040fb;
-            animation: neon-purple 2s ease-in-out infinite alternate;
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #6c5ce7, #a29bfe);
+            opacity: 0;
+            transition: opacity .25s ease;
         }
-        .game-card.easy {
-            border: 2px solid #ffab40;
-            animation: neon-orange 2s ease-in-out infinite alternate;
+        .card:hover {
+            background: rgba(255,255,255,.07);
+            border-color: rgba(108,92,231,.3);
+            transform: translateY(-2px);
         }
-        .game-card h3 {
-            font-size: 16px;
+        .card:hover::before { opacity: 1; }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card .emoji {
+            font-size: 20px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .card h2 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
             margin-bottom: 6px;
         }
-        .game-card p {
+        .card .date {
             font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .card p {
+            font-size: 14px;
             color: #999;
-            margin: 0;
+            line-height: 1.6;
         }
-        .game-card.strict h3 { color: #e040fb; }
-        .game-card.easy h3 { color: #ffab40; }
-        @keyframes neon-purple {
-            0% { box-shadow: 0 0 5px #e040fb, 0 0 10px #e040fb, inset 0 0 5px rgba(224, 64, 251, 0.2); }
-            100% { box-shadow: 0 0 15px #e040fb, 0 0 30px #e040fb, 0 0 45px #e040fb, inset 0 0 15px rgba(224, 64, 251, 0.3); }
+        .card .read-more {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #6c5ce7;
+            font-weight: 500;
         }
-        @keyframes neon-orange {
-            0% { box-shadow: 0 0 5px #ffab40, 0 0 10px #ffab40, inset 0 0 5px rgba(255, 171, 64, 0.2); }
-            100% { box-shadow: 0 0 15px #ffab40, 0 0 30px #ffab40, 0 0 45px #ffab40, inset 0 0 15px rgba(255, 171, 64, 0.3); }
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
         }
-        .draft h2 { font-size: 18px; margin-bottom: 8px; }
-        .draft .date { font-size: 12px; color: #999; }
-        .draft p { margin-top: 8px; font-size: 15px; }
-        code {
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 14px;
+        .game-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all .25s ease;
+            border: 1px solid rgba(255,255,255,.06);
         }
-        pre {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 12px;
-            border-radius: 4px;
+        .game-btn.strict { background: rgba(108, 92, 231, .1); }
+        .game-btn.strict:hover {
+            background: rgba(108, 92, 231, .2);
+            border-color: rgba(108, 92, 231, .4);
+            box-shadow: 0 0 20px rgba(108, 92, 231, .15);
+        }
+        .game-btn.easy { background: rgba(253, 203, 110, .08); }
+        .game-btn.easy:hover {
+            background: rgba(253, 203, 110, .15);
+            border-color: rgba(253, 203, 110, .3);
+            box-shadow: 0 0 20px rgba(253, 203, 110, .1);
+        }
+        .game-btn .icon { font-size: 28px; margin-bottom: 8px; }
+        .game-btn h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .game-btn.strict h3 { color: #a29bfe; }
+        .game-btn.easy h3 { color: #fdcb6e; }
+        .game-btn p { font-size: 12px; color: #777; }
+        .code-block {
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
             overflow-x: auto;
-            margin: 8px 0;
+        }
+        .code-block pre {
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #a8a8a8;
+        }
+        .code-block .comment { color: #555; }
+        .code-block .keyword { color: #c792ea; }
+        .code-block .string { color: #c3e88d; }
+        .code-block .func { color: #82aaff; }
+        .link-list {
+            list-style: none;
+            margin-top: 12px;
+        }
+        .link-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,.04);
             font-size: 14px;
         }
+        .link-list li:last-child { border-bottom: none; }
+        .link-list a {
+            color: #a29bfe;
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .link-list a:hover { color: #fff; }
+        .link-list .desc { color: #666; font-size: 13px; }
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            color: #999;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,.06);
+            color: #444;
             font-size: 13px;
+        }
+        footer a { color: #6c5ce7; text-decoration: none; }
+        @media (max-width: 480px) {
+            .container { padding: 20px 16px 40px; }
+            header { padding: 32px 0 28px; }
+            .game-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+    <div class="bg-grid"></div>
     <div class="container">
         <header>
+            <div class="avatar">Q</div>
             <h1>乾茂的草稿箱</h1>
             <p>随手记，别在意格式</p>
         </header>
 
-        <div class="draft">
-            <h2>🔥 LLM Agent 完全技术手册</h2>
-            <div class="date">2026-05-20 &middot; <a href="llm-agent-principles.html">阅读全文 →</a></div>
-            <p>22 个核心原理 + 14 件幻觉对抗套件，从分词到多智能体，完整覆盖 LLM Agent 六层技术栈。</p>
+        <div class="section-title">精选</div>
+
+        <div class="card">
+            <a href="llm-agent-principles.html" class="card-link">
+                <span class="emoji">🔥</span>
+                <h2>LLM Agent 完全技术手册</h2>
+                <div class="date">2026-05-20</div>
+                <p>22 个核心原理 + 14 件幻觉对抗套件，从分词到多智能体，完整覆盖 LLM Agent 六层技术栈。</p>
+                <span class="read-more">阅读全文 →</span>
+            </a>
         </div>
 
-        <div class="draft">
-            <h2>第一篇草稿</h2>
+        <div class="section-title">小游戏</div>
+
+        <div class="card">
+            <h2>贪吃蛇</h2>
             <div class="date">2026-05-08</div>
-            <p>这是我的线上草稿箱，用来记录各种零碎想法、代码片段、学习笔记。</p>
-            <p>想写什么就写什么，没人在意。</p>
-            <div class="game-cards">
-                <a href="snake.html" class="game-card strict">
+            <p>两种模式，选你喜欢的难度。</p>
+            <div class="game-grid">
+                <a href="snake.html" class="game-btn strict">
+                    <span class="icon">🐍</span>
                     <h3>严格版</h3>
                     <p>碰墙碰自己都死</p>
                 </a>
-                <a href="snake-easy.html" class="game-card easy">
+                <a href="snake-easy.html" class="game-btn easy">
+                    <span class="icon">🎮</span>
                     <h3>人菜瘾大版</h3>
                     <p>怎么撞都不会死</p>
                 </a>
             </div>
         </div>
 
-        <div class="draft">
+        <div class="section-title">笔记</div>
+
+        <div class="card">
             <h2>Python 常用代码片段</h2>
             <div class="date">2026-05-08</div>
-            <p>读写文件：</p>
-            <pre># 读文件
-with open("data.txt", "r", encoding="utf-8") as f:
-    content = f.read()
+            <div class="code-block">
+<pre><span class="comment"># 读文件</span>
+<span class="keyword">with</span> <span class="func">open</span>(<span class="string">"data.txt"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    content = f.<span class="func">read</span>()
 
-# 写文件
-with open("output.txt", "w", encoding="utf-8") as f:
-    f.write("Hello")</pre>
-            <p>列表推导式：</p>
-            <pre># 过滤偶数
+<span class="comment"># 列表推导式</span>
 nums = [1, 2, 3, 4, 5]
-evens = [x for x in nums if x % 2 == 0]</pre>
-            <p>JSON 操作：</p>
-            <pre>import json
+evens = [x <span class="keyword">for</span> x <span class="keyword">in</span> nums <span class="keyword">if</span> x % 2 == 0]
 
-# 读取 JSON
-with open("data.json", "r", encoding="utf-8") as f:
-    data = json.load(f)
-
-# 写入 JSON
-with open("output.json", "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)</pre>
+<span class="comment"># JSON 操作</span>
+<span class="keyword">import</span> json
+<span class="keyword">with</span> <span class="func">open</span>(<span class="string">"data.json"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+    data = json.<span class="func">load</span>(f)</pre>
+            </div>
         </div>
 
-        <div class="draft">
+        <div class="card">
             <h2>Git 常用命令</h2>
             <div class="date">2026-05-08</div>
-            <pre># 提交代码
+            <div class="code-block">
+<pre><span class="comment"># 提交代码</span>
 git add .
-git commit -m "说明"
+git commit -m <span class="string">"说明"</span>
 git push
 
-# 拉取最新代码
+<span class="comment"># 拉取最新代码</span>
 git pull
 
-# 查看状态
-git status
-
-# 查看历史
-git log --oneline</pre>
+<span class="comment"># 查看状态</span>
+git status</pre>
+            </div>
         </div>
 
-        <div class="draft">
+        <div class="card">
             <h2>常用工具网站</h2>
             <div class="date">2026-05-08</div>
-            <p><strong>开发工具：</strong></p>
-            <p>• <a href="https://www.runoob.com/">菜鸟教程</a> — 各语言入门参考</p>
-            <p>• <a href="https://regex101.com/">regex101</a> — 正则表达式测试</p>
-            <p>• <a href="https://www.json.cn/">JSON.cn</a> — JSON 格式化/校验</p>
-            <p>• <a href="https://tool.lu/">tool.lu</a> — 在线工具合集</p>
-            <p><strong>学习资源：</strong></p>
-            <p>• <a href="https://github.com/">GitHub</a> — 代码托管</p>
-            <p>• <a href="https://stackoverflow.com/">Stack Overflow</a> — 技术问答</p>
-            <p>• <a href="https://chat.openai.com/">ChatGPT</a> — AI 助手</p>
+            <ul class="link-list">
+                <li><a href="https://www.runoob.com/">菜鸟教程</a> <span class="desc">— 各语言入门参考</span></li>
+                <li><a href="https://regex101.com/">regex101</a> <span class="desc">— 正则表达式测试</span></li>
+                <li><a href="https://www.json.cn/">JSON.cn</a> <span class="desc">— JSON 格式化/校验</span></li>
+                <li><a href="https://tool.lu/">tool.lu</a> <span class="desc">— 在线工具合集</span></li>
+                <li><a href="https://github.com/">GitHub</a> <span class="desc">— 代码托管</span></li>
+                <li><a href="https://stackoverflow.com/">Stack Overflow</a> <span class="desc">— 技术问答</span></li>
+            </ul>
         </div>
 
         <footer>
-            <p>qianmao1989.github.io &middot; 最后更新: 2026-05-08</p>
+            <p><a href="https://github.com/qianmao1989">qianmao1989</a> · 最后更新: 2026-05-24</p>
         </footer>
     </div>
 </body>
