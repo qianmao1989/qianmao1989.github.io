@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>让 Claude Code 跑 MiMo-v2.5-pro：踩坑全记录 | Running Claude Code on MiMo-v2.5-pro</title>
+<style>
+:root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --text2: #8b949e; --accent: #58a6ff; --accent2: #f78166; --green: #3fb950; --yellow: #d29922; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height: 1.7; }
+.container { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+.back { color: var(--accent); text-decoration: none; font-size: 14px; }
+.back:hover { text-decoration: underline; }
+h1 { font-size: 28px; margin: 32px 0 8px; color: #fff; line-height: 1.4; }
+.subtitle { color: var(--text2); font-size: 15px; margin-bottom: 32px; }
+h2 { font-size: 20px; color: var(--accent); margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+h3 { font-size: 17px; color: var(--accent2); margin: 28px 0 12px; }
+p { margin: 12px 0; font-size: 15px; }
+blockquote { border-left: 3px solid var(--accent); padding: 12px 16px; margin: 16px 0; background: var(--card); border-radius: 0 8px 8px 0; font-size: 14px; }
+blockquote p { margin: 0; }
+code { background: var(--card); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: 'SFMono-Regular', Consolas, monospace; }
+pre { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; margin: 16px 0; font-size: 13px; line-height: 1.5; }
+pre code { background: none; padding: 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th { background: #1f2937; color: #fff; padding: 10px 12px; text-align: left; border: 1px solid var(--border); }
+td { padding: 10px 12px; border: 1px solid var(--border); }
+tr:nth-child(even) { background: var(--card); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.badge-ok { background: rgba(63,185,80,0.15); color: var(--green); }
+.badge-fail { background: rgba(248,81,73,0.15); color: #f85149; }
+.badge-warn { background: rgba(210,153,34,0.15); color: var(--yellow); }
+.tip { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.3); border-radius: 8px; padding: 14px 16px; margin: 16px 0; font-size: 14px; }
+.danger { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.3); border-radius: 8px; padding: 14px 16px; margin: 16px 0; font-size: 14px; }
+.bilingual { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+.bilingual > div { background: var(--card); padding: 14px; border-radius: 8px; font-size: 14px; }
+.lang-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.arch { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 20px 0; font-family: monospace; font-size: 13px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--text); }
+footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text2); font-size: 13px; text-align: center; }
+@media (max-width: 640px) {
+  .bilingual { grid-template-columns: 1fr; }
+  h1 { font-size: 22px; }
+  .container { padding: 24px 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a href="index.html" class="back">← 返回首页 / Back to Home</a>
+
+<h1>让 Claude Code 跑 MiMo-v2.5-pro<br><span style="color:var(--text2);font-size:18px;font-weight:400">踩坑全记录 / Troubleshooting Guide</span></h1>
+<p class="subtitle">2026-05-28 · 乾茂 · 一次真实的故障排查实战</p>
+
+<!-- ==================== 背景 ==================== -->
+<h2>📋 背景 / Background</h2>
+
+<div class="bilingual">
+<div>
+<div class="lang-label">🇨🇳 中文</div>
+<p>Claude Code (CC) 是 Anthropic 的官方 CLI 编程工具，默认只能连接 Claude API。MiMo-v2.5-pro 是小米开源的推理模型，性价比极高（降价后最高降幅 99%）。</p>
+<p>我们想让 CC 跑 MiMo，省下 Claude 的 API 费用，同时保持 CC 的工具调用能力（Playwright 浏览器、文件操作、Git 等）。</p>
+</div>
+<div>
+<div class="lang-label">🇬🇧 English</div>
+<p>Claude Code (CC) is Anthropic's official CLI coding tool, which normally only connects to the Claude API. MiMo-v2.5-pro is Xiaomi's open-source reasoning model with extreme cost efficiency (up to 99% cheaper after their May 2026 price drop).</p>
+<p>We wanted CC to run on MiMo, saving Claude API costs while keeping CC's full tool-calling capabilities (Playwright browser, file ops, Git, etc.).</p>
+</div>
+</div>
+
+<!-- ==================== 架构 ==================== -->
+<h2>🏗️ 最终架构 / Final Architecture</h2>
+
+<div class="arch">
+Claude Code (显示 "Opus 4.7")
+    ↓  Anthropic Messages 格式
+    ↓  模型名: claude-opus-4-7
+localhost:8899 (本地代理 / Local Proxy)
+    ↓  替换模型名 → mimo-v2.5-pro
+    ↓  其他参数原样转发 (tools, system, streaming)
+MiMo 原生 Anthropic 端点 / Native Anthropic Endpoint
+https://token-plan-cn.xiaomimimo.com/anthropic/v1/messages</div>
+
+<div class="tip">
+💡 <strong>关键发现 / Key Insight:</strong><br>
+MiMo 有原生的 Anthropic Messages 端点（<code>/anthropic/v1/messages</code>），不需要格式转换。代理只需要替换模型名，其他参数（tools、system prompt、streaming）全部原样转发。
+</div>
+
+<!-- ==================== 踩坑记录 ==================== -->
+<h2>🕳️ 踩坑记录 / Pitfalls</h2>
+
+<h3>坑 #1：代理做了多余的格式转换</h3>
+<div class="bilingual">
+<div>
+<div class="lang-label">🇨🇳 问题</div>
+<p>最初的代理脚本把 Anthropic 格式转成 OpenAI 格式再转发给 MiMo。结果 <strong>tools 参数全部丢失</strong>——CC 的 Playwright、文件操作等 MCP 工具全部失效。</p>
+</div>
+<div>
+<div class="lang-label">🇬🇧 Problem</div>
+<p>The original proxy converted Anthropic format → OpenAI format before forwarding to MiMo. This <strong>stripped all tools parameters</strong> — CC's Playwright, file operations, and all MCP tools stopped working.</p>
+</div>
+</div>
+
+<p><strong>✅ 解决方案 / Solution:</strong></p>
+<p>改用 MiMo 的原生 Anthropic 端点，代理只做模型名替换：</p>
+<pre><code># Before: 格式转换（丢失 tools）
+openai_body = convert_anthropic_to_openai(body)
+resp = await client.post(DEEPSEEK_URL, json=openai_body, ...)
+
+# After: 原样转发（保留 tools）
+body["model"] = "mimo-v2.5-pro"
+resp = await client.post(MIMO_ANTHROPIC_URL, json=body, ...)</code></pre>
+
+<h3>坑 #2：CC 不认自定义模型名</h3>
+<div class="bilingual">
+<div>
+<div class="lang-label">🇨🇳 问题</div>
+<p>CC 启动时会校验模型名，不在它内部列表里的直接拒绝，连 API 都不发。<code>--model mimo-v2.5-pro</code> 会报错 "model may not exist"。</p>
+</div>
+<div>
+<div class="lang-label">🇬🇧 Problem</div>
+<p>CC validates the model name at startup. If it's not in CC's internal list, CC rejects it before even making an API call. <code>--model mimo-v2.5-pro</code> gives "model may not exist" error.</p>
+</div>
+</div>
+
+<p><strong>✅ 解决方案 / Solution:</strong></p>
+<p>不要在 CC 端指定模型名。让 CC 显示默认的 "Opus 4.7"，由代理在转发时替换模型名。CC 不知道实际跑的是 MiMo。</p>
+<pre><code># PowerShell PROFILE — 不加 --model flag
+function claude {
+    $env:ANTHROPIC_API_KEY = ***"MIMO_DIDI_KEY", "User")
+    $env:ANTHROPIC_BASE_URL = "http://localhost:8899"
+    Set-Location D:\CherryAI_Workspace
+    claude.exe   # 不加 --model
+}</code></pre>
+
+<h3>坑 #3：MiMo 降价重置导致 Key 失效</h3>
+<div class="bilingual">
+<div>
+<div class="lang-label">🇨🇳 问题</div>
+<p>2026-05-27 MiMo 大降价，所有 Token Plan 额度全量重置。重置后旧 Key 立即失效，新 Key 的 chat/completions 端点返回 502/401（服务器过载）。</p>
+</div>
+<div>
+<div class="lang-label">🇬🇧 Problem</div>
+<p>On 2026-05-27, MiMo had a major price drop and reset all Token Plan credits. Old keys were immediately invalidated. The new key's chat/completions endpoint returned 502/401 (server overload).</p>
+</div>
+</div>
+
+<div class="danger">
+⚠️ <strong>教训 / Lesson:</strong> MiMo 降价期间，老 Key（未重置的）比新 Key 更稳定。能用就别重置！<br>
+During MiMo price drops, old keys (unreset) are more stable than new ones. If it works, don't reset!
+</div>
+
+<h3>坑 #4：代理进程卡死不报错</h3>
+<div class="bilingual">
+<div>
+<div class="lang-label">🇨🇳 问题</div>
+<p>代理进程在端口 8899 监听，看起来正常运行，但实际不响应请求（卡死）。CC 连上后超时无响应。</p>
+</div>
+<div>
+<div class="lang-label">🇬🇧 Problem</div>
+<p>The proxy process listened on port 8899 and appeared running, but was actually frozen — not responding to requests. CC connected but timed out.</p>
+</div>
+</div>
+
+<p><strong>✅ 解决方案 / Solution:</strong></p>
+<pre><code># 检查代理是否真能响应 / Check if proxy actually responds
+$resp = Invoke-RestMethod -Uri "http://localhost:8899/v1/messages" `
+  -Method POST -Headers @{"x-api-key"=$key; "anthropic-version"="2023-06-01"} `
+  -Body $body -TimeoutSec 15
+
+# 如果超时，重启代理 / If timeout, restart proxy
+Stop-Process -Name python -Force
+Start-Process python -ArgumentList "-u","D:\CherryAI_Workspace\proxy\anthropic_deepseek_proxy.py"</code></pre>
+
+<!-- ==================== 完整配置 ==================== -->
+<h2>⚙️ 完整配置步骤 / Full Setup Guide</h2>
+
+<h3>Step 1：环境变量 / Environment Variables</h3>
+<pre><code># 设置 MiMo API Key（系统级，永久生效）
+[Environment]::SetEnvironmentVariable("MIMO_DIDI_KEY", "你的key", "User")
+[Environment]::SetEnvironmentVariable("MIMO_BASE_URL", "https://token-plan-cn.xiaomimimo.com", "User")</code></pre>
+
+<h3>Step 2：代理脚本 / Proxy Script</h3>
+<p>核心逻辑只有 10 行：</p>
+<pre><code># anthropic_deepseek_proxy.py 核心 / Core logic
+MIMO_ANTHROPIC_URL = "https://token-plan-cn.xiaomimimo.com/anthropic/v1/messages"
+MODEL = "mimo-v2.5-pro"
+
+@app.post("/v1/messages")
+async def messages_endpoint(request: Request):
+    body = await request.json()
+    body["model"] = MODEL  # 只替换模型名 / Only replace model name
+    resp = await client.post(MIMO_ANTHROPIC_URL, json=body, headers={...})
+    return JSONResponse(resp.json())</code></pre>
+
+<h3>Step 3：PowerShell PROFILE</h3>
+<pre><code># $PROFILE 内容 / Content of $PROFILE
+$env:ANTHROPIC_API_KEY = ***"MIMO_DIDI_KEY", "User")
+$env:ANTHROPIC_BASE_URL = "http://localhost:8899"
+
+function claude {
+    $env:ANTHROPIC_API_KEY = ***"MIMO_DIDI_KEY", "User")
+    $env:ANTHROPIC_BASE_URL = "http://localhost:8899"
+    claude.exe
+}</code></pre>
+
+<h3>Step 4：开机自启 / Auto-start on Boot</h3>
+<pre><code># 创建 VBS 脚本放到启动文件夹
+# Create VBS script in Startup folder
+Set objShell = CreateObject("WScript.Shell")
+objShell.Run "python -u D:\CherryAI_Workspace\proxy\anthropic_deepseek_proxy.py", 0, False</code></pre>
+
+<!-- ==================== 验证 ==================== -->
+<h2>✅ 验证清单 / Verification Checklist</h2>
+
+<table>
+<tr><th>检查项 / Check</th><th>命令 / Command</th><th>预期 / Expected</th></tr>
+<tr><td>代理进程</td><td><code>netstat -ano | Select-String ":8899.*LISTEN"</code></td><td>有输出 <span class="badge badge-ok">✓</span></td></tr>
+<tr><td>代理响应</td><td><code>POST http://localhost:8899/v1/messages</code></td><td>200 OK <span class="badge badge-ok">✓</span></td></tr>
+<tr><td>MiMo 直连</td><td><code>GET /v1/models</code></td><td>200 + 模型列表 <span class="badge badge-ok">✓</span></td></tr>
+<tr><td>CC 启动</td><td><code>claude</code></td><td>显示 Opus 4.7（正常）<span class="badge badge-ok">✓</span></td></tr>
+<tr><td>工具调用</td><td>在 CC 里输入 "用 Playwright 打开 example.com"</td><td>浏览器打开 <span class="badge badge-ok">✓</span></td></tr>
+</table>
+
+<!-- ==================== 故障排查 ==================== -->
+<h2>🔍 故障排查速查表 / Quick Troubleshooting</h2>
+
+<table>
+<tr><th>症状 / Symptom</th><th>原因 / Cause</th><th>修复 / Fix</th></tr>
+<tr><td>CC 报 "model may not exist"</td><td>PROFILE 里加了 <code>--model mimo-v2.5-pro</code></td><td>去掉 --model flag，靠代理翻译模型名</td></tr>
+<tr><td>CC 报 "Invalid API Key"</td><td>Key 失效或环境变量未加载</td><td>检查 <code>[Environment]::GetEnvironmentVariable("MIMO_XXX_KEY", "User")</code></td></tr>
+<tr><td>CC 工具调用失败（Playwright 等）</td><td>代理做了格式转换，丢失 tools 参数</td><td>确保代理直连 <code>/anthropic/v1/messages</code>，不做格式转换</td></tr>
+<tr><td>CC 超时无响应</td><td>代理卡死或 MiMo API 过载</td><td>重启代理；检查 MiMo API 状态</td></tr>
+<tr><td>CC 显示 "Opus 4.7" 但实际在跑 MiMo</td><td>正常现象</td><td>代理翻译了模型名，CC 的 UI 不知道</td></tr>
+<tr><td>代理日志有请求但 CC 无反应</td><td>代理返回格式不对</td><td>检查代理是否原样返回 MiMo 的 Anthropic 格式响应</td></tr>
+</table>
+
+<!-- ==================== 成本对比 ==================== -->
+<h2>💰 成本对比 / Cost Comparison</h2>
+
+<table>
+<tr><th>方案</th><th>模型</th><th>输入价格</th><th>输出价格</th><th>缓存命中</th></tr>
+<tr><td>Claude 官方</td><td>Opus 4.7</td><td>$15/M tokens</td><td>$75/M tokens</td><td>$1.875/M</td></tr>
+<tr><td>DeepSeek</td><td>v4-pro</td><td>¥3/M tokens</td><td>¥6/M tokens</td><td>¥0.025/M</td></tr>
+<tr><td style="color:var(--green);font-weight:600">MiMo (推荐)</td><td>v2.5-pro</td><td>¥3/M tokens</td><td>¥6/M tokens</td><td>¥0.025/M</td></tr>
+</table>
+
+<p>MiMo 降价后价格和 DeepSeek 持平，但有小米硬件生态加持。配合本方案，CC 可以用 MiMo 的价格享受 Claude 级别的工具调用能力。</p>
+
+<!-- ==================== 总结 ==================== -->
+<h2>📝 总结 / Summary</h2>
+
+<div class="bilingual">
+<div>
+<div class="lang-label">🇨🇳 中文</div>
+<p>让 CC 跑 MiMo 的核心就一句话：<strong>代理只替换模型名，其他参数原样转发。</strong></p>
+<p>不要做格式转换，不要加 <code>--model</code> flag，不要重置能用的 Key。</p>
+<p>三个"不要"搞定一切。</p>
+</div>
+<div>
+<div class="lang-label">🇬🇧 English</div>
+<p>The core of running CC on MiMo in one sentence: <strong>The proxy only replaces the model name; everything else passes through unchanged.</strong></p>
+<p>Don't convert formats. Don't add <code>--model</code> flag. Don't reset a working key.</p>
+<p>Three "don'ts" solve everything.</p>
+</div>
+</div>
+
+<footer>
+<p>乾茂 · 2026 · <a href="https://github.com/qianmao1989" style="color:var(--accent)">GitHub</a> · <a href="https://www.fiverr.com/s/kLqez7b" style="color:var(--accent)">Fiverr</a></p>
+<p style="margin-top:8px">有问题？开 Issue 讨论 / Questions? Open an Issue</p>
+</footer>
+
+</div>
+</body>
+</html>

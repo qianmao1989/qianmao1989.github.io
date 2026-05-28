@@ -21,6 +21,7 @@
 | 内容 | 说明 |
 |------|------|
 | 🧠 [LLM Agent 完全技术手册](https://qianmao1989.github.io/llm-agent-principles.html) | 22 原理 + 14 幻觉套件 |
+| 🔧 [让 Claude Code 跑 MiMo](https://qianmao1989.github.io/cc-mimo-guide.html) | 代理配置 + 踩坑全记录 (双语) |
 | 🐍 Python 代码片段 | 文件读写、列表推导、JSON 操作 |
 | 🔧 Git 常用命令 | 日常提交拉取备忘 |
 | 🎮 贪吃蛇 ×2 | 严格版 + 人菜瘾大版 |
