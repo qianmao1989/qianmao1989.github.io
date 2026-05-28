@@ -94,7 +94,7 @@
     <div class="container">
         <header>
             <h1>LLM Agent 完全技术手册</h1>
-            <p>22 个核心原理 + 14 件幻觉对抗套件，覆盖从分词到多智能体的全部技术栈</p>
+            <p>22 个核心原理 + 22 条幻觉对抗体系，覆盖从分词到多智能体的全部技术栈</p>
             <a href="index.html" class="back-link">← 返回草稿箱</a>
         </header>
 
@@ -218,24 +218,34 @@
             <h2><span class="num">15</span>幻觉 — AI 最头疼的问题 + 14 件对抗套件</h2>
             <span class="tag">问题</span><span class="tag">对抗</span><span class="tag">军械库</span>
             <p>模型会<strong>自信地编造不存在的事实</strong>。因为 LLM 是"下一个词预测器"，不是"事实验证器"。</p>
-            <p style="margin-top: 12px;"><strong>🛡️ 事前预防（4件）</strong></p>
-            <p>① <strong>降低温度</strong> → Temperature 0-0.3，减少随机性，降低瞎编概率</p>
-            <p>② <strong>限定范围</strong> → System prompt 写死"不知道就说不确定，不要编造"</p>
-            <p>③ <strong>结构化输出</strong> → 预填充强制 JSON/表格，少自由发挥就少幻觉</p>
-            <p>④ <strong>Few-Shot 校准</strong> → 给正确示例当模板，模型知道自己该怎么答</p>
-            <p style="margin-top: 12px;"><strong>🔍 事中验证（5件）</strong></p>
-            <p>⑤ <strong>能查不猜</strong> → RAG 检索 + 联网搜索，让外部数据当依据</p>
-            <p>⑥ <strong>能跑不想</strong> → 数字 Python 算，文件工具读，不靠模型自己回忆</p>
-            <p>⑦ <strong>交叉验证</strong> → 同一问题两个模型/两次查询对比，结果不一致就标记</p>
-            <p>⑧ <strong>思维链拆解</strong> → 复杂问题拆成立步骤，每步单独验证后再汇总</p>
-            <p>⑨ <strong>引用溯源</strong> → 要求 AI 标注信息来源，没出处的声明就是可疑的</p>
-            <p style="margin-top: 12px;"><strong>🛑 事后拦截（5件）</strong></p>
-            <p>⑩ <strong>回读校验</strong> → 写完 Excel 读回来确认，不信任第一次输出</p>
-            <p>⑪ <strong>停止序列 + Guardrails</strong> → 实时过滤疑似幻觉，检测到就截断</p>
-            <p>⑫ <strong>人工审核</strong> → 关键数据（金额、日期、账号）人肉过一眼</p>
-            <p>⑬ <strong>多 Agent 对账</strong> → 一个 Agent 输出，另一个 Agent 审计复核</p>
-            <p>⑭ <strong>ReAct 循环兜底</strong> → 查→验证→发现不对→再查，直到确认才输出</p>
-            <p style="margin-top: 12px; color: #ffab40;">📌 <strong>军规</strong>：不信任 AI 的默认输出，把自己当成不可信的证人，交叉验证了才能当证据。</p>
+            <p style="margin-top: 12px;"><strong>🔧 操作硬规则（5件）— AI助手日常执行准则</strong></p>
+            <p>① <strong>日期时间</strong> → 先查系统时钟（date / datetime.now()），不猜、不推算、不联网查</p>
+            <p>② <strong>数据类数字</strong> → 表格数值、统计、数量，从源文件读取，不猜不估不回忆</p>
+            <p>③ <strong>引用</strong> → 论文、URL、法规、API文档，搜索确认存在后再引用，不凭印象</p>
+            <p>④ <strong>代码</strong> → 函数名、API、库，跑一下验证能用再给出，不用不存在的接口</p>
+            <p>⑤ <strong>文件路径</strong> → ls 或 Test-Path 确认存在后再使用，不猜路径</p>
+            <p style="margin-top: 12px;"><strong>🧠 推理防护（4件）— 防止思维层面的幻觉</strong></p>
+            <p>⑥ <strong>错误前提</strong> → 用户问题有错误假设，必须直接指出，不能为了"配合"而顺着编</p>
+            <p>⑦ <strong>多条件任务</strong> → 先列清单（1.2.3.），逐项完成逐项打勾，最后一项项核对再交付</p>
+            <p>⑧ <strong>复杂推理</strong> → 拆成步骤，每步验证再进下一步。推理跳跃或前后矛盾，自己先修正</p>
+            <p>⑨ <strong>编造内容</strong> → 不确定存不存在的人物、事件、文献、函数，先搜索确认，不凭印象输出</p>
+            <p style="margin-top: 12px;"><strong>🛡️ 事前预防（4件）— 模型/系统层面控制</strong></p>
+            <p>⑩ <strong>降低温度</strong> → Temperature 0-0.3，减少随机性，降低瞎编概率</p>
+            <p>⑪ <strong>限定范围</strong> → System prompt 写死"不知道就说不确定，不要编造"</p>
+            <p>⑫ <strong>结构化输出</strong> → 预填充强制 JSON/表格，少自由发挥就少幻觉</p>
+            <p>⑬ <strong>Few-Shot 校准</strong> → 给正确示例当模板，模型知道自己该怎么答</p>
+            <p style="margin-top: 12px;"><strong>🔍 事中验证（5件）— 执行过程中验证</strong></p>
+            <p>⑭ <strong>能查不猜</strong> → RAG 检索 + 联网搜索 + 读源文件，让外部数据当依据</p>
+            <p>⑮ <strong>能跑不想</strong> → 数字 Python 算，文件工具读，不靠模型自己回忆</p>
+            <p>⑯ <strong>交叉验证</strong> → 同一问题两个模型/两次查询对比，结果不一致就标记</p>
+            <p>⑰ <strong>思维链拆解</strong> → 复杂问题拆成步骤，每步单独验证后再汇总</p>
+            <p>⑱ <strong>引用溯源</strong> → 要求 AI 标注信息来源，没出处的声明就是可疑的</p>
+            <p style="margin-top: 12px;"><strong>🛑 事后拦截（4件）— 交付前最终检查</strong></p>
+            <p>⑲ <strong>回读校验</strong> → 写完文件/Excel 读回来确认内容正确，不信任第一次输出</p>
+            <p>⑳ <strong>人工审核</strong> → 关键数据（金额、日期、账号、法律条款）提醒用户人肉过一眼</p>
+            <p>㉑ <strong>多条件核对</strong> → 交付前逐项对照需求清单，缺一项都不算完成</p>
+            <p>㉒ <strong>ReAct 循环兜底</strong> → 查→验证→发现不对→再查，直到确认才输出</p>
+            <p style="margin-top: 12px; color: #ffab40;">📌 <strong>军规</strong>：不信任 AI 的默认输出，把自己当成不可信的证人，交叉验证了才能当证据。能查就不猜，能跑就不想，能验证就不信任自己。</p>
         </div>
 
         <div class="principle">
